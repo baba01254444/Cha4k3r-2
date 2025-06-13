@@ -2,10 +2,10 @@
 import React, { useState } from "react";
 
 export default function TokenChecker() {
-  const [token, setToken] = useState<string>(""); // ✅ type defined
-  const [loading, setLoading] = useState<boolean>(false); // ✅ type defined
-  const [result, setResult] = useState<any>(null); // ✅ temporary 'any' (can improve later)
-  const [error, setError] = useState<string | null>(null); // ✅ FIXED here
+  const [token, setToken] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   const checkToken = async () => {
     setLoading(true);
@@ -26,9 +26,13 @@ export default function TokenChecker() {
     }
   };
 
+  const isGroupChat = (chatName: string) => {
+    return chatName.toLowerCase().includes("group") || chatName.includes("ग्रुप") || chatName.includes("ग्रुप") || chatName.includes("⚫") || chatName.length > 25;
+  };
+
   return (
-    <div className="max-w-xl mx-auto mt-10 p-4">
-      <h1 className="text-2xl font-bold mb-4">TUF4N 4C - Facebook Token Checker</h1>
+    <div className="max-w-2xl mx-auto mt-10 p-4">
+      <h1 className="text-3xl font-bold mb-6 text-center">TUF4N 4C 🚩✅- Facebook Token Checker</h1>
       <div className="flex items-center space-x-2">
         <input
           className="border p-2 w-full"
@@ -52,16 +56,36 @@ export default function TokenChecker() {
       )}
 
       {result && (
-        <div className="bg-gray-100 p-4 rounded mt-4">
-          <p><strong>Token Owner:</strong> {result.name}</p>
-          <p><strong>Token Type:</strong> {result.type}</p>
-          <p><strong>ID:</strong> {result.id}</p>
-          <p className="mt-2 font-semibold">Chats:</p>
-          <ul className="list-disc list-inside">
-            {result.conversations.map((chat: any, idx: number) => (
-              <li key={idx}>{chat.name} ({chat.id})</li>
-            ))}
-          </ul>
+        <div className="mt-6">
+          <div className="bg-gray-100 p-4 rounded">
+            <p><strong>Token Owner:</strong> {result.name}</p>
+            <p><strong>Token Type:</strong> {result.type}</p>
+            <p><strong>ID:</strong> {result.id}</p>
+          </div>
+
+          <div className="mt-4">
+            <p className="text-xl font-semibold mb-2">Chats:</p>
+
+            {/* Group Chats */}
+            <div className="bg-black text-white p-4 rounded mb-4">
+              <p className="font-bold mb-2">Group Chats:</p>
+              <ul className="list-disc list-inside">
+                {result.conversations.filter(chat => isGroupChat(chat.name)).map((chat, idx) => (
+                  <li key={idx}>{chat.name} ({chat.id})</li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Single Chats */}
+            <div className="bg-sky-300 text-red-700 p-4 rounded">
+              <p className="font-bold mb-2">Single Chats:</p>
+              <ul className="list-disc list-inside">
+                {result.conversations.filter(chat => !isGroupChat(chat.name)).map((chat, idx) => (
+                  <li key={idx}>{chat.name} ({chat.id})</li>
+                ))}
+              </ul>
+            </div>
+          </div>
         </div>
       )}
     </div>
