@@ -2,10 +2,10 @@
 import React, { useState } from "react";
 
 export default function TokenChecker() {
-  const [token, setToken] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState(null);
-  const [error, setError] = useState(null);
+  const [token, setToken] = useState<string>(""); // ✅ type defined
+  const [loading, setLoading] = useState<boolean>(false); // ✅ type defined
+  const [result, setResult] = useState<any>(null); // ✅ temporary 'any' (can improve later)
+  const [error, setError] = useState<string | null>(null); // ✅ FIXED here
 
   const checkToken = async () => {
     setLoading(true);
@@ -58,7 +58,7 @@ export default function TokenChecker() {
           <p><strong>ID:</strong> {result.id}</p>
           <p className="mt-2 font-semibold">Chats:</p>
           <ul className="list-disc list-inside">
-            {result.conversations.map((chat, idx) => (
+            {result.conversations.map((chat: any, idx: number) => (
               <li key={idx}>{chat.name} ({chat.id})</li>
             ))}
           </ul>
@@ -66,4 +66,4 @@ export default function TokenChecker() {
       )}
     </div>
   );
-        }
+}
